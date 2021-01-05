@@ -1,0 +1,17 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: http-scaledobject
+  namespace: demo
+  labels:
+    deploymentName: nginx
+spec:
+  maxReplicaCount: 5
+  scaleTargetRef:
+    name: nginx
+  triggers:
+    - type: metrics-api
+      metadata:
+        targetValue: "2"
+        url: "http://components-mock.demo.svc.cluster.local:3003/components"
+        valueLocation: 'components.worker.tasks'
