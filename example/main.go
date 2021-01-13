@@ -4,13 +4,21 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"unsafe"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
 var sl *zap.SugaredLogger
+
+type Response struct {
+	Components struct {
+		Worker struct {
+			Tasks int `json:"tasks"`
+		} `json:"worker"`
+	} `json:"components"`
+}
 
 func init() {
 	// set logger
@@ -30,13 +38,8 @@ func main() {
 }
 
 func getComponents(c echo.Context) error {
-	sl.Info("Called")
-	task := os.Getenv("WORKER_TASKS")
-	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, Str2Bytes(fmt.Sprintf(`{"components":{"worker":{"tasks":'%s'}}} `, task)))
-}
-
-// Str2Bytes transfer string to bytes
-func Str2Bytes(str string) []byte {
-	vec := *(*[]byte)(unsafe.Pointer(&str))
-	return vec
+	res := &Response{}
+	res.Components.Worker.Tasks, _ = strconv.Atoi(os.Getenv("WORKER_TASKS"))
+	sl.Info(fmt.Sprintf(`response tasks :%d`, res.Components.Worker.Tasks))
+	return c.JSON(http.StatusOK, res)
 }
