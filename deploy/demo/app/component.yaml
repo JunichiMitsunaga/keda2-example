@@ -6,16 +6,6 @@ metadata:
     name: demo
 ---
 apiVersion: v1
-data:
-  WORKER_TASKS: "1"
-kind: ConfigMap
-metadata:
-  labels:
-    app: components-mock
-  name: components-mock-config
-  namespace: demo
----
-apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -55,10 +45,10 @@ spec:
     spec:
       containers:
       - name: components-mock
-        envFrom:
-          - configMapRef:
-              name: components-mock-config
         image: cabi99/components-mock:0.0.1
+        env:
+        - name: WORKER_TASKS
+          value: "0"
         imagePullPolicy: Always
         ports:
         - containerPort: 3003

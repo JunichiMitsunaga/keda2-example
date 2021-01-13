@@ -12,6 +12,6 @@ spec:
   triggers:
     - type: metrics-api
       metadata:
-        targetValue: "2"
+        targetValue: '2'
         url: "http://components-mock.demo.svc.cluster.local:3003/components"
-        valueLocation: 'components.worker.tasks'
+        valueLocation: "components.worker.tasks"
